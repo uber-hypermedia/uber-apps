@@ -1,4 +1,0 @@
-uber-apps
-=========
-
-Uber Apps
