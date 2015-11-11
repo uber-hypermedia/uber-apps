@@ -1,6 +1,9 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
+	"log"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -40,21 +43,56 @@ func TestTasks(t *testing.T) {
 			continue
 		}
 
-		if w.Body.String() != tst.body {
-			t.Errorf("%s: Body mismatch: expected %s, got %s", tst.description, tst.body, w.Body.String())
+		if equaljson([]byte(w.Body.String()), []byte(tst.body)) == false {
+			body := bytes.NewBuffer([]byte{})
+			json.Compact(body, []byte(tst.body))
+			t.Errorf("%s: Body mismatch:\nexpected %s\ngot      %s", tst.description, string(body.Bytes()), w.Body.String())
 			continue
 		}
 	}
 }
 
+func equaljson(p, q []byte) bool {
+	cp := bytes.NewBuffer([]byte{})
+
+	if err := json.Compact(cp, p); err != nil {
+		log.Printf("unable to compact cp json for equaljson: %+v", err)
+		return false
+	}
+
+	cq := bytes.NewBuffer([]byte{})
+
+	if err := json.Compact(cq, q); err != nil {
+		log.Printf("unable to compact cq json for equaljson: %+v", err)
+		return false
+	}
+
+	if len(cp.Bytes()) != len(cq.Bytes()) {
+		return false
+	}
+
+	cpb, cqb := cp.Bytes(), cq.Bytes()
+
+	for i, b := range cpb {
+		if b != cqb[i] {
+			return false
+		}
+	}
+
+	return true
+}
+
 func notasks() context.Context {
-	return context.Background()
+	ctx := context.WithValue(context.Background(), "tasks", []string{})
+	return ctx
 }
 
 func onetask() context.Context {
-	return context.Background()
+	ctx := context.WithValue(context.Background(), "tasks", []string{"task one"})
+	return ctx
 }
 
 func multipletasks() context.Context {
-	return context.Background()
+	ctx := context.WithValue(context.Background(), "tasks", []string{"task one", "task two", "task three"})
+	return ctx
 }

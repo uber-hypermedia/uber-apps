@@ -5,7 +5,7 @@ var (
 	{ 
 		"uber": 
 		{ 
-			"version": 1.0, 
+			"version": "1.0", 
 			"data": 
 			[
 				{ 
@@ -14,24 +14,23 @@ var (
 					[ 
 						{ 
 							"id": "list", 
-							"rel": [ "collection" ], 
 							"name": "links",
+							"rel": [ "collection" ], 
 							"url": "/tasks/", 
 							"action": "read" 
 						},
 						{ 
 							"id": "search", 
-							"rel": [ "search" ], 
 							"name": "links",
+							"rel": [ "search" ], 
 							"url": "/tasks/search", 
 							"action": "read",
-							"model": "?text={text}",
+							"model": "?text={text}"
 						} 
 					] 
 				},
 				{
-					"id": "tasks",
-					"data": []
+					"id": "tasks"
 				}
 			] 
 		}
@@ -40,7 +39,7 @@ var (
 	{ 
 		"uber": 
 		{ 
-			"version": 1.0, 
+			"version": "1.0", 
 			"data": 
 			[
 				{ 
@@ -49,18 +48,18 @@ var (
 					[ 
 						{ 
 							"id": "list", 
-							"rel": [ "collection" ], 
 							"name": "links",
+							"rel": [ "collection" ], 
 							"url": "/tasks/", 
 							"action": "read" 
 						},
 						{ 
 							"id": "search", 
-							"rel": [ "search" ], 
 							"name": "links",
+							"rel": [ "search" ], 
 							"url": "/tasks/search", 
 							"action": "read",
-							"model": "?text={text}",
+							"model": "?text={text}"
 						} 
 					] 
 				},
@@ -70,12 +69,12 @@ var (
 					[
 						{
 							"id": "task1",
-							"rel": [ "item" ],
 							"name": "tasks",
+							"rel": [ "item" ],
 							"data": 
 							[
-								{ "rel": [ "complete" ], "url": "/tasks/complete/", "model": "id={id}", "action": "append"},
-								{ "name": "text", "value": "this is a task" },
+								{ "rel": [ "complete" ], "url": "/tasks/complete/", "action": "append", "model": "id={id}"},
+								{ "name": "text", "value": "task one" }
 							]
 						}
 					]
@@ -87,7 +86,7 @@ var (
 	{ 
 		"uber": 
 		{ 
-			"version": 1.0, 
+			"version": "1.0", 
 			"data": 
 			[
 				{ 
@@ -96,18 +95,18 @@ var (
 					[ 
 						{ 
 							"id": "list", 
-							"rel": [ "collection" ], 
 							"name": "links",
+							"rel": [ "collection" ], 
 							"url": "/tasks/", 
 							"action": "read" 
 						},
 						{ 
 							"id": "search", 
-							"rel": [ "search" ], 
 							"name": "links",
+							"rel": [ "search" ], 
 							"url": "/tasks/search", 
 							"action": "read",
-							"model": "?text={text}",
+							"model": "?text={text}"
 						} 
 					] 
 				},
@@ -117,32 +116,32 @@ var (
 					[
 						{
 							"id": "task1",
-							"rel": [ "item" ],
 							"name": "tasks",
+							"rel": [ "item" ],
 							"data": 
 							[
-								{ "rel": [ "complete" ], "url": "/tasks/complete/", "model": "id={id}", "action": "append"},
-								{ "name": "text", "value": "this is task one" },
+								{ "rel": [ "complete" ], "url": "/tasks/complete/", "action": "append", "model": "id={id}"},
+								{ "name": "text", "value": "task one" }
 							]
 						},
 						{
 							"id": "task2",
-							"rel": [ "item" ],
 							"name": "tasks",
+							"rel": [ "item" ],
 							"data": 
 							[
-								{ "rel": [ "complete" ], "url": "/tasks/complete/", "model": "id={id}", "action": "append"},
-								{ "name": "text", "value": "this is task two" },
+								{ "rel": [ "complete" ], "url": "/tasks/complete/", "action": "append", "model": "id={id}"},
+								{ "name": "text", "value": "task two" }
 							]
 						},
  						{
 							"id": "task3",
-							"rel": [ "item" ],
 							"name": "tasks",
+							"rel": [ "item" ],
 							"data": 
 							[
-								{ "rel": [ "complete" ], "url": "/tasks/complete/", "model": "id={id}", "action": "append"},
-								{ "name": "text", "value": "this is task three" },
+								{ "rel": [ "complete" ], "url": "/tasks/complete/", "action": "append", "model": "id={id}"},
+								{ "name": "text", "value": "task three" }
 							]
 						}
 					]
