@@ -102,6 +102,13 @@ func mkEmptylist() *udoc {
 				Url:    "/tasks/search",
 				Action: "read",
 				Model:  "?text={text}",
+				Data:   []udata{}},
+			udata{Id: "add",
+				Name:   "links",
+				Rel:    []string{"add"},
+				Url:    "/tasks/",
+				Action: "append",
+				Model:  "text={text}",
 				Data:   []udata{}}}}
 
 	return &udoc{ubody{"1.0", []udata{links, udata{Id: "tasks", Data: []udata{}}}}}

@@ -26,6 +26,14 @@ var (
 							"url": "/tasks/search", 
 							"action": "read",
 							"model": "?text={text}"
+						},
+						{ 
+							"id": "add", 
+							"name": "links",
+							"rel": [ "add" ], 
+							"url": "/tasks/", 
+							"action": "append",
+							"model": "text={text}"
 						} 
 					] 
 				},
@@ -60,6 +68,14 @@ var (
 							"url": "/tasks/search", 
 							"action": "read",
 							"model": "?text={text}"
+						},
+						{ 
+							"id": "add", 
+							"name": "links",
+							"rel": [ "add" ], 
+							"url": "/tasks/", 
+							"action": "append",
+							"model": "text={text}"
 						} 
 					] 
 				},
@@ -107,7 +123,15 @@ var (
 							"url": "/tasks/search", 
 							"action": "read",
 							"model": "?text={text}"
-						} 
+						},
+						{ 
+							"id": "add", 
+							"name": "links",
+							"rel": [ "add" ], 
+							"url": "/tasks/", 
+							"action": "append",
+							"model": "text={text}"
+						} 					
 					] 
 				},
 				{
