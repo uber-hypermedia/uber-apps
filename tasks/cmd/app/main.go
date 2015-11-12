@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"regexp"
+	"strconv"
 
 	"golang.org/x/net/context"
 )
@@ -80,6 +81,50 @@ func taskadd(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
+func taskcomplete(ctx context.Context, w http.ResponseWriter, req *http.Request) {
+	body, err := ioutil.ReadAll(req.Body)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	re := regexp.MustCompile("id=[[:alpha:]]+([[:digit:]]+)")
+	sm := re.FindStringSubmatch(string(body))
+	if sm == nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	completed := false
+	taskid, err := strconv.Atoi(sm[1])
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	tasks := ctx.Value("tasks").(*list.List)
+
+	if tasks.Len() < taskid {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	for t, i := tasks.Front(), 1; t != nil; t = t.Next() {
+		if i == taskid {
+			completed = true
+			tasks.Remove(t)
+		}
+		i++
+	}
+
+	if !completed {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+}
+
 func tasklist(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 	tasks := ctx.Value("tasks").(*list.List)
 
@@ -93,7 +138,7 @@ func tasklist(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 			Rel:  []string{"item"},
 			Name: "tasks",
 			Data: []udata{
-				udata{Rel: []string{"complete"}, Url: "/tasks/complete/", Model: "id={id}", Action: "append"},
+				udata{Rel: []string{"complete"}, Url: "/tasks/complete/", Model: fmt.Sprintf("id=task%d", i+1), Action: "append"},
 				udata{Name: "text", Value: t.Value.(string)}}}
 
 		resp.Uber.Data[1].Data = append(resp.Uber.Data[1].Data, task)
@@ -131,7 +176,7 @@ func tasksearch(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 				Rel:  []string{"item"},
 				Name: "tasks",
 				Data: []udata{
-					udata{Rel: []string{"complete"}, Url: "/tasks/complete/", Model: "id={id}", Action: "append"},
+					udata{Rel: []string{"complete"}, Url: "/tasks/complete/", Model: fmt.Sprintf("id=task%d", i+1), Action: "append"},
 					udata{Name: "text", Value: t.Value.(string)}}}
 
 			resp.Uber.Data[1].Data = append(resp.Uber.Data[1].Data, task)

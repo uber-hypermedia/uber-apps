@@ -42,6 +42,10 @@ var tt = []tasktest{
 	{"search for existing task", tasksearch, "/tasks?text=task two", GET, "", multipletasks(), 200, data.Tasktwo},
 	{"search for missing task", tasksearch, "/tasks?text=task three", GET, "", onetask(), 200, data.Emptylist},
 	{"bad search request", tasksearch, "/tasks?task=another task", GET, "", multipletasks(), 400, ""},
+	{"complete existing task", taskcomplete, "/tasks/complete", POST, "id=task2", multipletasks(), 204, ""},
+	{"complete unknown task", taskcomplete, "/tasks/complete", POST, "id=task3", onetask(), 404, ""},
+	{"complete on empty list", taskcomplete, "/tasks/complete", POST, "id=task1", notasks(), 404, ""},
+	{"bad complete request", taskcomplete, "/tasks/complete", POST, "task=task4", multipletasks(), 400, ""},
 }
 
 func TestTasks(t *testing.T) {

@@ -101,7 +101,7 @@ var (
 							"rel": [ "item" ],
 							"data": 
 							[
-								{ "rel": [ "complete" ], "url": "/tasks/complete/", "action": "append", "model": "id={id}"},
+								{ "rel": [ "complete" ], "url": "/tasks/complete/", "action": "append", "model": "id=task1"},
 								{ "name": "text", "value": "task one" }
 							]
 						}
@@ -162,7 +162,7 @@ var (
 							"rel": [ "item" ],
 							"data": 
 							[
-								{ "rel": [ "complete" ], "url": "/tasks/complete/", "action": "append", "model": "id={id}"},
+								{ "rel": [ "complete" ], "url": "/tasks/complete/", "action": "append", "model": "id=task1"},
 								{ "name": "text", "value": "task one" }
 							]
 						},
@@ -172,7 +172,7 @@ var (
 							"rel": [ "item" ],
 							"data": 
 							[
-								{ "rel": [ "complete" ], "url": "/tasks/complete/", "action": "append", "model": "id={id}"},
+								{ "rel": [ "complete" ], "url": "/tasks/complete/", "action": "append", "model": "id=task2"},
 								{ "name": "text", "value": "task two" }
 							]
 						},
@@ -182,7 +182,7 @@ var (
 							"rel": [ "item" ],
 							"data": 
 							[
-								{ "rel": [ "complete" ], "url": "/tasks/complete/", "action": "append", "model": "id={id}"},
+								{ "rel": [ "complete" ], "url": "/tasks/complete/", "action": "append", "model": "id=task3"},
 								{ "name": "text", "value": "task three" }
 							]
 						}
@@ -243,7 +243,7 @@ var (
 							"rel": [ "item" ],
 							"data": 
 							[
-								{ "rel": [ "complete" ], "url": "/tasks/complete/", "action": "append", "model": "id={id}"},
+								{ "rel": [ "complete" ], "url": "/tasks/complete/", "action": "append", "model": "id=task1"},
 								{ "name": "text", "value": "task two" }
 							]
 						}
