@@ -33,11 +33,11 @@ func (ca ContextAdapter) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 }
 
 type udata struct {
-	Id         string   `json:"id,omitempty"`
+	ID         string   `json:"id,omitempty"`
 	Name       string   `json:"name,omitempty"`
 	Rel        []string `json:"rel,omitempty"`
 	Label      string   `json:"label,omitempty"`
-	Url        string   `json:"url,omitempty"`
+	URL        string   `json:"url,omitempty"`
 	Template   bool     `json:"template,omitempty"`
 	Action     string   `json:"action,omitempty"`
 	Transclude bool     `json:"transclude,omitempty"`
@@ -134,11 +134,11 @@ func tasklist(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 	}
 
 	for t, i := tasks.Front(), 0; t != nil; t = t.Next() {
-		task := udata{Id: fmt.Sprintf("task%d", i+1),
+		task := udata{ID: fmt.Sprintf("task%d", i+1),
 			Rel:  []string{"item"},
 			Name: "tasks",
 			Data: []udata{
-				udata{Rel: []string{"complete"}, Url: "/tasks/complete/", Model: fmt.Sprintf("id=task%d", i+1), Action: "append"},
+				udata{Rel: []string{"complete"}, URL: "/tasks/complete/", Model: fmt.Sprintf("id=task%d", i+1), Action: "append"},
 				udata{Name: "text", Value: t.Value.(string)}}}
 
 		resp.Uber.Data[1].Data = append(resp.Uber.Data[1].Data, task)
@@ -172,11 +172,11 @@ func tasksearch(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 
 	for t, i := tasks.Front(), 0; t != nil; t = t.Next() {
 		if qt == t.Value.(string) {
-			task := udata{Id: fmt.Sprintf("task%d", i+1),
+			task := udata{ID: fmt.Sprintf("task%d", i+1),
 				Rel:  []string{"item"},
 				Name: "tasks",
 				Data: []udata{
-					udata{Rel: []string{"complete"}, Url: "/tasks/complete/", Model: fmt.Sprintf("id=task%d", i+1), Action: "append"},
+					udata{Rel: []string{"complete"}, URL: "/tasks/complete/", Model: fmt.Sprintf("id=task%d", i+1), Action: "append"},
 					udata{Name: "text", Value: t.Value.(string)}}}
 
 			resp.Uber.Data[1].Data = append(resp.Uber.Data[1].Data, task)
@@ -196,33 +196,33 @@ func tasksearch(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 
 func mkEmptylist() *udoc {
 	links := udata{
-		Id: "links",
+		ID: "links",
 		Data: []udata{
-			udata{Id: "alps",
+			udata{ID: "alps",
 				Rel:    []string{"profile"},
-				Url:    "/tasks-alps.xml",
+				URL:    "/tasks-alps.xml",
 				Action: "read",
 				Data:   []udata{}},
-			udata{Id: "list",
+			udata{ID: "list",
 				Name:   "links",
 				Rel:    []string{"collection"},
-				Url:    "/tasks/",
+				URL:    "/tasks/",
 				Action: "read",
 				Data:   []udata{}},
-			udata{Id: "search",
+			udata{ID: "search",
 				Name:   "links",
 				Rel:    []string{"search"},
-				Url:    "/tasks/search",
+				URL:    "/tasks/search",
 				Action: "read",
 				Model:  "?text={text}",
 				Data:   []udata{}},
-			udata{Id: "add",
+			udata{ID: "add",
 				Name:   "links",
 				Rel:    []string{"add"},
-				Url:    "/tasks/",
+				URL:    "/tasks/",
 				Action: "append",
 				Model:  "text={text}",
 				Data:   []udata{}}}}
 
-	return &udoc{ubody{"1.0", []udata{links, udata{Id: "tasks", Data: []udata{}}}}}
+	return &udoc{ubody{"1.0", []udata{links, udata{ID: "tasks", Data: []udata{}}}}}
 }
