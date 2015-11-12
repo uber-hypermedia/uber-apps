@@ -50,7 +50,8 @@ type udata struct {
 
 type ubody struct {
 	Version string  `json:"version"`
-	Data    []udata `json:"data"`
+	Data    []udata `json:"data,omitempty"`
+	Error   []udata `json:"error,omitempty"`
 }
 
 type udoc struct {
@@ -65,6 +66,7 @@ func taskadd(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
+		w.Write(mkError("ServerError", "reason", "Cannot read HTTP request body"))
 		return
 	}
 
@@ -72,6 +74,7 @@ func taskadd(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 	sm := re.FindStringSubmatch(string(body))
 	if sm == nil {
 		w.WriteHeader(http.StatusBadRequest)
+		w.Write(mkError("ClientError", "reason", "Unrecognized add task body"))
 		return
 	}
 
@@ -85,6 +88,7 @@ func taskcomplete(ctx context.Context, w http.ResponseWriter, req *http.Request)
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
+		w.Write(mkError("ServerError", "reason", "Cannot read HTTP request body"))
 		return
 	}
 
@@ -92,6 +96,7 @@ func taskcomplete(ctx context.Context, w http.ResponseWriter, req *http.Request)
 	sm := re.FindStringSubmatch(string(body))
 	if sm == nil {
 		w.WriteHeader(http.StatusBadRequest)
+		w.Write(mkError("ClientError", "reason", "Unrecognized complete text body"))
 		return
 	}
 
@@ -99,6 +104,7 @@ func taskcomplete(ctx context.Context, w http.ResponseWriter, req *http.Request)
 	taskid, err := strconv.Atoi(sm[1])
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
+		w.Write(mkError("ServerError", "reason", "Cannot read HTTP request body"))
 		return
 	}
 
@@ -106,6 +112,7 @@ func taskcomplete(ctx context.Context, w http.ResponseWriter, req *http.Request)
 
 	if tasks.Len() < taskid {
 		w.WriteHeader(http.StatusNotFound)
+		w.Write(mkError("ClientError", "reason", "No such task"))
 		return
 	}
 
@@ -119,6 +126,7 @@ func taskcomplete(ctx context.Context, w http.ResponseWriter, req *http.Request)
 
 	if !completed {
 		w.WriteHeader(http.StatusNotFound)
+		w.Write(mkError("ClientError", "reason", "No such task"))
 		return
 	}
 
@@ -148,7 +156,7 @@ func tasklist(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 	bs, err := json.Marshal(resp)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		w.Write(mkError("ServerError", "reason", "Cannot read HTTP request body"))
 		return
 	}
 
@@ -162,6 +170,7 @@ func tasksearch(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 	qt := req.URL.Query().Get("text")
 	if len(qt) <= 0 {
 		w.WriteHeader(http.StatusBadRequest)
+		w.Write(mkError("ClientError", "reason", "Missing text parameter"))
 		return
 	}
 
@@ -187,7 +196,7 @@ func tasksearch(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 	bs, err := json.Marshal(resp)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		w.Write(mkError("ServerError", "reason", "Cannot read HTTP request body"))
 	}
 
 	w.WriteHeader(http.StatusOK)
@@ -224,5 +233,13 @@ func mkEmptylist() *udoc {
 				Model:  "text={text}",
 				Data:   []udata{}}}}
 
-	return &udoc{ubody{"1.0", []udata{links, udata{ID: "tasks", Data: []udata{}}}}}
+	return &udoc{ubody{Version: "1.0", Data: []udata{links, udata{ID: "tasks", Data: []udata{}}}, Error: []udata{}}}
+}
+
+func mkError(name, rel, value string) []byte {
+	bs, err := json.Marshal(udoc{ubody{Version: "1.0", Error: []udata{udata{Name: name, Rel: []string{rel}, Value: value}}}})
+	if err != nil {
+		panic(err)
+	}
+	return bs
 }
