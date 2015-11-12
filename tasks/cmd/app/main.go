@@ -153,6 +153,11 @@ func mkEmptylist() *udoc {
 	links := udata{
 		Id: "links",
 		Data: []udata{
+			udata{Id: "alps",
+				Rel:    []string{"profile"},
+				Url:    "/tasks-alps.xml",
+				Action: "read",
+				Data:   []udata{}},
 			udata{Id: "list",
 				Name:   "links",
 				Rel:    []string{"collection"},

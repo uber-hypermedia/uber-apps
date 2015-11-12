@@ -12,6 +12,12 @@ var (
 					"id": "links", 
 					"data": 
 					[ 
+						{
+							"id": "alps",
+							"rel": [ "profile" ],
+							"url": "/tasks-alps.xml",
+							"action": "read"
+						},
 						{ 
 							"id": "list", 
 							"name": "links",
@@ -54,6 +60,12 @@ var (
 					"id": "links", 
 					"data": 
 					[ 
+						{
+							"id": "alps",
+							"rel": [ "profile" ],
+							"url": "/tasks-alps.xml",
+							"action": "read"
+						},
 						{ 
 							"id": "list", 
 							"name": "links",
@@ -109,6 +121,12 @@ var (
 					"id": "links", 
 					"data": 
 					[ 
+						{
+							"id": "alps",
+							"rel": [ "profile" ],
+							"url": "/tasks-alps.xml",
+							"action": "read"
+						},
 						{ 
 							"id": "list", 
 							"name": "links",
@@ -184,6 +202,12 @@ var (
 					"id": "links", 
 					"data": 
 					[ 
+						{
+							"id": "alps",
+							"rel": [ "profile" ],
+							"url": "/tasks-alps.xml",
+							"action": "read"
+						},
 						{ 
 							"id": "list", 
 							"name": "links",
