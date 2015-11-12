@@ -38,6 +38,10 @@ var tt = []tasktest{
 	{"add task to empty list", taskadd, "/tasks", POST, "text=another task", notasks(), 204, ""},
 	{"add task to existing tasks", taskadd, "/tasks", POST, "text=another task", multipletasks(), 204, ""},
 	{"bad add request", taskadd, "/tasks", POST, "task=another task", multipletasks(), 400, ""},
+	{"search empty list", tasksearch, "/tasks?text=task one", GET, "", notasks(), 200, data.Emptylist},
+	{"search for existing task", tasksearch, "/tasks?text=task two", GET, "", multipletasks(), 200, data.Tasktwo},
+	{"search for missing task", tasksearch, "/tasks?text=task three", GET, "", onetask(), 200, data.Emptylist},
+	{"bad search request", tasksearch, "/tasks?task=another task", GET, "", multipletasks(), 400, ""},
 }
 
 func TestTasks(t *testing.T) {

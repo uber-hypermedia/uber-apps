@@ -60,6 +60,26 @@ func main() {
 	panic("not implemented")
 }
 
+func taskadd(ctx context.Context, w http.ResponseWriter, req *http.Request) {
+	body, err := ioutil.ReadAll(req.Body)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	re := regexp.MustCompile("text=(([[:word:]]|[[:space:]])*)")
+	sm := re.FindStringSubmatch(string(body))
+	if sm == nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	tasks := ctx.Value("tasks").(*list.List)
+	tasks.PushBack(sm[1])
+
+	w.WriteHeader(http.StatusNoContent)
+}
+
 func tasklist(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 	tasks := ctx.Value("tasks").(*list.List)
 
@@ -84,30 +104,49 @@ func tasklist(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
+		return
 	}
 
 	w.WriteHeader(http.StatusOK)
 	w.Write(bs)
 }
 
-func taskadd(ctx context.Context, w http.ResponseWriter, req *http.Request) {
-	body, err := ioutil.ReadAll(req.Body)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
+func tasksearch(ctx context.Context, w http.ResponseWriter, req *http.Request) {
+	tasks := ctx.Value("tasks").(*list.List)
 
-	re := regexp.MustCompile("text=(([[:word:]]|[[:space:]])*)")
-	sm := re.FindStringSubmatch(string(body))
-	if sm == nil {
+	qt := req.URL.Query().Get("text")
+	if len(qt) <= 0 {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	tasks := ctx.Value("tasks").(*list.List)
-	tasks.PushBack(sm[1])
+	resp := mkEmptylist()
+	if resp == nil {
+		panic("can't generate base UBER document")
+	}
 
-	w.WriteHeader(http.StatusNoContent)
+	for t, i := tasks.Front(), 0; t != nil; t = t.Next() {
+		if qt == t.Value.(string) {
+			task := udata{Id: fmt.Sprintf("task%d", i+1),
+				Rel:  []string{"item"},
+				Name: "tasks",
+				Data: []udata{
+					udata{Rel: []string{"complete"}, Url: "/tasks/complete/", Model: "id={id}", Action: "append"},
+					udata{Name: "text", Value: t.Value.(string)}}}
+
+			resp.Uber.Data[1].Data = append(resp.Uber.Data[1].Data, task)
+			i++
+		}
+	}
+
+	bs, err := json.Marshal(resp)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write(bs)
 }
 
 func mkEmptylist() *udoc {
