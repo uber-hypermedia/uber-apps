@@ -10,6 +10,8 @@ import (
 	"regexp"
 	"strconv"
 
+	"github.com/gorilla/mux"
+
 	"golang.org/x/net/context"
 )
 
@@ -20,7 +22,7 @@ type ContextHandler interface {
 type ContextHandlerFunc func(context.Context, http.ResponseWriter, *http.Request)
 
 func (h ContextHandlerFunc) ServeHTTPWithContext(ctx context.Context, w http.ResponseWriter, req *http.Request) {
-	h.ServeHTTPWithContext(ctx, w, req)
+	h(ctx, w, req)
 }
 
 type ContextAdapter struct {
@@ -58,8 +60,26 @@ type udoc struct {
 	Uber ubody `json:"uber"`
 }
 
+var (
+	taskctx = context.Background()
+)
+
+func init() {
+	taskctx = context.WithValue(taskctx, "tasks", list.New())
+	http.Handle("/", router())
+}
+
 func main() {
-	panic("not implemented")
+	http.ListenAndServe(":3006", nil)
+}
+
+func router() *mux.Router {
+	r := mux.NewRouter()
+	r.Handle("/tasks", http.Handler(ContextAdapter{ctx: taskctx, handler: ContextHandlerFunc(tasklist)})).Methods("GET")
+	r.Handle("/tasks", http.Handler(ContextAdapter{ctx: taskctx, handler: ContextHandlerFunc(taskadd)})).Methods("POST")
+	r.Handle("/tasks/complete", http.Handler(ContextAdapter{ctx: taskctx, handler: ContextHandlerFunc(taskcomplete)})).Methods("POST")
+	r.Handle("/tasks/search", http.Handler(ContextAdapter{ctx: taskctx, handler: ContextHandlerFunc(tasksearch)})).Methods("GET")
+	return r
 }
 
 func taskadd(ctx context.Context, w http.ResponseWriter, req *http.Request) {
