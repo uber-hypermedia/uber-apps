@@ -6,10 +6,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
+	"os"
 	"regexp"
 	"strconv"
 
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 
 	"golang.org/x/net/context"
@@ -66,7 +69,8 @@ var (
 
 func init() {
 	taskctx = context.WithValue(taskctx, "tasks", list.New())
-	http.Handle("/", router())
+	taskctx = context.WithValue(taskctx, "logger", log.New(os.Stdout, "taskd: ", log.LstdFlags))
+	http.Handle("/", handlers.CompressHandler(handlers.LoggingHandler(os.Stdout, router())))
 }
 
 func main() {

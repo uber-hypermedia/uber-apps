@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"strings"
 	"testing"
 
@@ -108,6 +109,7 @@ func equaljson(p, q []byte) bool {
 
 func notasks() context.Context {
 	ctx := context.WithValue(context.Background(), "tasks", list.New())
+	ctx = context.WithValue(ctx, "logger", log.New(os.Stdout, "testing: ", log.LstdFlags))
 	return ctx
 }
 
@@ -116,6 +118,7 @@ func onetask() context.Context {
 	l.PushBack("task one")
 
 	ctx := context.WithValue(context.Background(), "tasks", l)
+	ctx = context.WithValue(ctx, "logger", log.New(os.Stdout, "testing: ", log.LstdFlags))
 	return ctx
 }
 
@@ -126,5 +129,6 @@ func multipletasks() context.Context {
 	l.PushBack("task three")
 
 	ctx := context.WithValue(context.Background(), "tasks", l)
+	ctx = context.WithValue(ctx, "logger", log.New(os.Stdout, "testing: ", log.LstdFlags))
 	return ctx
 }
