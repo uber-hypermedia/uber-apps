@@ -1,4 +1,4 @@
-// Package main provides a simple UBER hypermedia drive todo list server
+// Package main provides a simple UBER hypermedia driven todo list server
 package main
 
 import (
@@ -17,25 +17,35 @@ import (
 	"github.com/uber-apps/tasks/cmd/taskd/Godeps/_workspace/src/golang.org/x/net/context"
 )
 
+// ContextHandler defines the ServeHTTPWithContext method. Types that implement ContextHandler
+// can be registered, via a ContextAdapter, to serve a particular path or subtree in an HTTP server.
 type ContextHandler interface {
 	ServeHTTPWithContext(context.Context, http.ResponseWriter, *http.Request)
 }
 
+// ContextHandlerFunc is an adapter to allow the use of ordinary functions as, context aware, HTTP
+// handlers. If f is a function with the appropriate signature, ContextHandlerFunc(f) is a ContextHandler
+// tha calls f.
 type ContextHandlerFunc func(context.Context, http.ResponseWriter, *http.Request)
 
+// ServeHTTPWithContext calls h(ctx, w, req).
 func (h ContextHandlerFunc) ServeHTTPWithContext(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 	h(ctx, w, req)
 }
 
+// ContextAdapter associates a Context and a ContextHandler. Because it implements the http.Handler interface
+// ContextAdapter instances can be registered to serve a particular path or subtree in an HTTP server.
 type ContextAdapter struct {
 	ctx     context.Context
 	handler ContextHandler
 }
 
+// ServeHTTP calls the handler's ServeHTTPWithContext method with the associated Context.
 func (ca ContextAdapter) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	ca.handler.ServeHTTPWithContext(ca.ctx, w, req)
 }
 
+// udata represents the individual data elements of an Uber hypermedia document.
 type udata struct {
 	ID         string   `json:"id,omitempty"`
 	Name       string   `json:"name,omitempty"`
@@ -52,16 +62,19 @@ type udata struct {
 	Data       []udata  `json:"data,omitempty"`
 }
 
+// ubody is the body of an Uber hypermedia document.
 type ubody struct {
 	Version string  `json:"version"`
 	Data    []udata `json:"data,omitempty"`
 	Error   []udata `json:"error,omitempty"`
 }
 
+// udoc represents an Uber hypermedia document.
 type udoc struct {
 	Uber ubody `json:"uber"`
 }
 
+// appendItem adds a task to the Uber hypermedia document.
 func (ud *udoc) appendItem(taskid, value string) {
 	task := udata{ID: taskid,
 		Rel:  []string{"item"},
@@ -96,6 +109,7 @@ func router() *mux.Router {
 	return r
 }
 
+// taskadd adds a task to the list.
 func taskadd(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
@@ -118,6 +132,8 @@ func taskadd(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
+// taskcomplete removes a task from the list. It expects a body containing id={task} where
+// {task} is the id of the task to be removed.
 func taskcomplete(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
@@ -167,6 +183,7 @@ func taskcomplete(ctx context.Context, w http.ResponseWriter, req *http.Request)
 	w.WriteHeader(http.StatusNoContent)
 }
 
+// tasklist responds with the list of tasks.
 func tasklist(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 	tasks := ctx.Value("tasks").(*list.List)
 
@@ -191,6 +208,8 @@ func tasklist(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 	w.Write(bs)
 }
 
+// tasksearch searches the task list. The search criteria is specified by a query parameter
+// of the form text={text} where {text} is matched against the task's value string.
 func tasksearch(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 	tasks := ctx.Value("tasks").(*list.List)
 
@@ -223,6 +242,7 @@ func tasksearch(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 	w.Write(bs)
 }
 
+// mkEmptylist creates an Uber hypermedia document that represents an empty task list.
 func mkEmptylist() *udoc {
 	links := udata{
 		ID: "links",
@@ -256,6 +276,7 @@ func mkEmptylist() *udoc {
 	return &udoc{ubody{Version: "1.0", Data: []udata{links, udata{ID: "tasks", Data: []udata{}}}, Error: []udata{}}}
 }
 
+// mkError creates an Uber hypermedia document that represents an error.
 func mkError(name, rel, value string) []byte {
 	bs, err := json.Marshal(udoc{ubody{Version: "1.0", Error: []udata{udata{Name: name, Rel: []string{rel}, Value: value}}}})
 	if err != nil {
