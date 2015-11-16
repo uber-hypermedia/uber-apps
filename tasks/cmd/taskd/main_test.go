@@ -11,7 +11,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/wkharold/uber-apps/tasks/cmd/app/data"
+	"github.com/uber-apps/tasks/cmd/taskd/data"
 
 	"golang.org/x/net/context"
 )
