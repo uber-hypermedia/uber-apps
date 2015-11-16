@@ -53,6 +53,16 @@ type udata struct {
 	Data       []udata  `json:"data,omitempty"`
 }
 
+type ubody struct {
+	Version string  `json:"version"`
+	Data    []udata `json:"data,omitempty"`
+	Error   []udata `json:"error,omitempty"`
+}
+
+type udoc struct {
+	Uber ubody `json:"uber"`
+}
+
 func (ud *udoc) appendItem(taskid, value string) {
 	task := udata{ID: taskid,
 		Rel:  []string{"item"},
@@ -62,16 +72,6 @@ func (ud *udoc) appendItem(taskid, value string) {
 			udata{Name: "text", Value: value}}}
 
 	ud.Uber.Data[1].Data = append(ud.Uber.Data[1].Data, task)
-}
-
-type ubody struct {
-	Version string  `json:"version"`
-	Data    []udata `json:"data,omitempty"`
-	Error   []udata `json:"error,omitempty"`
-}
-
-type udoc struct {
-	Uber ubody `json:"uber"`
 }
 
 var (
