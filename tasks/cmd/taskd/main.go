@@ -12,10 +12,9 @@ import (
 	"regexp"
 	"strconv"
 
-	"github.com/gorilla/handlers"
-	"github.com/gorilla/mux"
-
-	"golang.org/x/net/context"
+	"github.com/uber-apps/tasks/cmd/taskd/Godeps/_workspace/src/github.com/gorilla/handlers"
+	"github.com/uber-apps/tasks/cmd/taskd/Godeps/_workspace/src/github.com/gorilla/mux"
+	"github.com/uber-apps/tasks/cmd/taskd/Godeps/_workspace/src/golang.org/x/net/context"
 )
 
 type ContextHandler interface {

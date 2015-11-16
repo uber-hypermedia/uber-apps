@@ -13,7 +13,7 @@ import (
 
 	"github.com/uber-apps/tasks/cmd/taskd/data"
 
-	"golang.org/x/net/context"
+	"github.com/uber-apps/tasks/cmd/taskd/Godeps/_workspace/src/golang.org/x/net/context"
 )
 
 const (
