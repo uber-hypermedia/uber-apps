@@ -53,6 +53,17 @@ type udata struct {
 	Data       []udata  `json:"data,omitempty"`
 }
 
+func (ud *udoc) appendItem(taskid, value string) {
+	task := udata{ID: taskid,
+		Rel:  []string{"item"},
+		Name: "tasks",
+		Data: []udata{
+			udata{Rel: []string{"complete"}, URL: "/tasks/complete/", Model: fmt.Sprintf("id=%s", taskid), Action: "append"},
+			udata{Name: "text", Value: value}}}
+
+	ud.Uber.Data[1].Data = append(ud.Uber.Data[1].Data, task)
+}
+
 type ubody struct {
 	Version string  `json:"version"`
 	Data    []udata `json:"data,omitempty"`
@@ -166,14 +177,7 @@ func tasklist(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 	}
 
 	for t, i := tasks.Front(), 0; t != nil; t = t.Next() {
-		task := udata{ID: fmt.Sprintf("task%d", i+1),
-			Rel:  []string{"item"},
-			Name: "tasks",
-			Data: []udata{
-				udata{Rel: []string{"complete"}, URL: "/tasks/complete/", Model: fmt.Sprintf("id=task%d", i+1), Action: "append"},
-				udata{Name: "text", Value: t.Value.(string)}}}
-
-		resp.Uber.Data[1].Data = append(resp.Uber.Data[1].Data, task)
+		resp.appendItem(fmt.Sprintf("task%d", i+1), t.Value.(string))
 		i++
 	}
 
@@ -205,14 +209,7 @@ func tasksearch(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 
 	for t, i := tasks.Front(), 0; t != nil; t = t.Next() {
 		if qt == t.Value.(string) {
-			task := udata{ID: fmt.Sprintf("task%d", i+1),
-				Rel:  []string{"item"},
-				Name: "tasks",
-				Data: []udata{
-					udata{Rel: []string{"complete"}, URL: "/tasks/complete/", Model: fmt.Sprintf("id=task%d", i+1), Action: "append"},
-					udata{Name: "text", Value: t.Value.(string)}}}
-
-			resp.Uber.Data[1].Data = append(resp.Uber.Data[1].Data, task)
+			resp.appendItem(fmt.Sprintf("task%d", i+1), t.Value.(string))
 			i++
 		}
 	}
