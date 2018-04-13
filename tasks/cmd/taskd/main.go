@@ -102,8 +102,8 @@ func main() {
 
 func router() *mux.Router {
 	r := mux.NewRouter()
-	r.Handle("/tasks", http.Handler(ContextAdapter{ctx: taskctx, handler: ContextHandlerFunc(tasklist)})).Methods("GET")
-	r.Handle("/tasks", http.Handler(ContextAdapter{ctx: taskctx, handler: ContextHandlerFunc(taskadd)})).Methods("POST")
+	r.Handle("/tasks/", http.Handler(ContextAdapter{ctx: taskctx, handler: ContextHandlerFunc(tasklist)})).Methods("GET")
+	r.Handle("/tasks/", http.Handler(ContextAdapter{ctx: taskctx, handler: ContextHandlerFunc(taskadd)})).Methods("POST")
 	r.Handle("/tasks/complete", http.Handler(ContextAdapter{ctx: taskctx, handler: ContextHandlerFunc(taskcomplete)})).Methods("POST")
 	r.Handle("/tasks/search", http.Handler(ContextAdapter{ctx: taskctx, handler: ContextHandlerFunc(tasksearch)})).Methods("GET")
 	return r
@@ -204,6 +204,7 @@ func tasklist(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	w.Header().Set("Content-Type", "application/vnd.uber+json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(bs)
 }
@@ -238,6 +239,7 @@ func tasksearch(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 		w.Write(mkError("ServerError", "reason", "Cannot read HTTP request body"))
 	}
 
+	w.Header().Set("Content-Type", "application/vnd.uber+json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(bs)
 }
