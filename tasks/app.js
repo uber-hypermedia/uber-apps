@@ -31,7 +31,7 @@ function handler(req, res) {
   m.profileUrl = '/tasks-alps.xml';
 
   // media-type identifiers
-  m.uberXml  = {'content-type':'application/xml'};
+  m.uberXml  = {'content-type':'application/vnd.uber+xml'};
   m.textHtml = {'content-type':'text/html'};
   m.appJS = {'content-type':'application/javascript'};
   m.appXml = {'content-type':'application/xml'};
