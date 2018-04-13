@@ -18,5 +18,5 @@ $ $GOPATH/bin/taskd
 Once it's installed you can try it out using curl, _e.g_, 
 
 ```
-$ curl -X GET http://localhost:3006/tasks
+$ curl -X GET http://localhost:3006/tasks/
 ```
