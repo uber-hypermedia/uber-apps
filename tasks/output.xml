@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<uber version="1.0">
+  <data id="links">
+    <data id="alps" rel="profile" url="/tasks-alps.xml" action="read"/>
+    <data id="list" rel="collection" name="links" url="/tasks/" action="read"/>
+    <data id="search" rel="search" name="links" url="/tasks/search" action="read" model="?text={text}"/>
+    <data id="add" rel="add" name="links" url="/tasks/" action="append" model="text={text}"/>
+  </data>
+  <data id="tasks">
+    <data id="task0" rel="item" name="tasks">
+      <data rel="complete" url="/tasks/complete/" model="id=0" action="append"/>
+      <data name="text">this is some item</data>
+    </data>
+    <data id="task1" rel="item" name="tasks">
+      <data rel="complete" url="/tasks/complete/" model="id=1" action="append"/>
+      <data name="text">this is another item</data>
+    </data>
+    <data id="task2" rel="item" name="tasks">
+      <data rel="complete" url="/tasks/complete/" model="id=2" action="append"/>
+      <data name="text">this is one more item</data>
+    </data>
+    <data id="task3" rel="item" name="tasks">
+      <data rel="complete" url="/tasks/complete/" model="id=3" action="append"/>
+      <data name="text">this is possibly an item</data>
+    </data>
+  </data>
+</uber>
